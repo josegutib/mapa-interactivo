@@ -3,8 +3,14 @@ geocodificadorModulo = (function () {
 
     // Permite obtener las coordenadas y las usa con la función llamada por parámtero
   function usaDireccion (direccion, funcionALlamar) {
+        const circulo = new google.maps.Circle( {
+          center: posicionCentral,
+          radius: 20000
+        });
+
         const request = {
-          address: direccion
+          address: direccion,
+          bounds: circulo.getBounds()
         }
 
         geocodificador.geocode(request,function(response){
