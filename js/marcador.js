@@ -7,6 +7,13 @@ marcadorModulo = (function () {
 
     // Crea un marcador y lo muestra en el mapa
   function mostrarMiMarcador (ubicacion) {
+      miMarcador = new google.maps.Marker({
+      position: ubicacion,
+      map: mapa,
+      animation: google.maps.Animation.DROP,
+      title: 'Hello World!'
+});
+
         /* Completar la función mostrarMiMarcador() para crear un marcador
         en la posición pasada por parámetro y mostrarlo en el mapa.
         Este marcador debe tener un título, una animación.
@@ -174,40 +181,80 @@ marcadorModulo = (function () {
     return miMarcador.getPosition()
   }
 
+
+  function agregarMarcadorConStreetView (ubicacion, letra, zIndice) {
+    var marcador = new google.maps.Marker({
+      map: mapa,
+      position: ubicacion,
+      label: letra,
+      animation: google.maps.Animation.DROP,
+      draggable: false,
+      zIndex: zIndice
+
+    })
+    google.maps.event.addListener(marcador, 'click', function () {
+      streetViewModulo.fijarStreetView(marcador.position)
+    })
+
+    return marcador
+  }
+
     // Agrego el marcador con la ruta. Le asigna las letras correspondientes al marcador.
     // Al hacer click en el marcador se fija el StreetView en la posición de este.
-  function agregarMarcadorRuta (direccion, letra, esInicial) {
+  function agregarMarcadorRuta (start, end, waypoints) {
     borrarMarcadores(marcadoresRuta)
 
-    var zIndice = 1
-    if (esInicial) {
-      zIndice = 2
-    }
+    const promesas = [
+      geocodificadorModulo.resolverDireccion(start),
+      geocodificadorModulo.resolverDireccion(end),
+    ]
 
-    function agregarMarcadorConStreetView (direccion, ubicacion) {
-      var marcador = new google.maps.Marker({
-        map: mapa,
-        position: ubicacion,
-        label: letra,
-        animation: google.maps.Animation.DROP,
-        draggable: false,
-        zIndex: zIndice
+    waypoints.forEach(waypoint => {
+      console.log(waypoint);
+      const promesa = geocodificadorModulo.resolverDireccion(waypoint)
+      promesas.push(promesa)
+    })
 
-      })
-      limites.extend(ubicacion)
-      google.maps.event.addListener(marcador, 'click', function () {
-        streetViewModulo.fijarStreetView(marcador.position)
-      })
+    Promise.all(promesas)
 
-      marcadoresRuta.push(marcador)
-    }
-    geocodificadorModulo.usaDireccion(direccion, agregarMarcadorConStreetView)
-    mapa.fitBounds(limites)
+    .then( ( array ) => {
+      const ubicacionStart = array[0].ubicacion
+      const ubicacionEnd = array[1].ubicacion
+      const marcadorStart = agregarMarcadorConStreetView(ubicacionStart, 's', 2)
+      const marcadorEnd = agregarMarcadorConStreetView(ubicacionEnd, 'e', 1)
+
+      limites.extend(ubicacionStart)
+      limites.extend(ubicacionEnd)
+
+      marcadoresRuta.push(marcadorStart)
+      marcadoresRuta.push(marcadorEnd)
+
+      for(let i=2; i<array.length; i++){
+        const ubicacionWaypoint = array[i].ubicacion
+        const marcadorWaypoint = agregarMarcadorConStreetView(ubicacionWaypoint, 'w', 1)
+        limites.extend(ubicacionWaypoint)
+        marcadoresRuta.push(marcadorWaypoint)
+      }
+
+      mapa.fitBounds(limites)
+    })
+
+    // var zIndice = 1
+    // if (esInicial) {
+    //   zIndice = 2
+    // }
+
+    // limites.extend(ubicacion)
+    // marcadoresRuta.push(marcador)
+
+    // geocodificadorModulo.usaDireccion(direccion, agregarMarcadorConStreetView)
+
   }
 
     // Marca los lugares que están en el arreglo resultados y
     // extiende los límites del mapa teniendo en cuenta los nuevos lugares
   function marcarLugares (resultados, status) {
+    console.log(status);
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < resultados.length; i++) {
         crearMarcador(resultados[i])

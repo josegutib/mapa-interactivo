@@ -16,16 +16,16 @@
     <div id="left-panel">
         <div class="from-to">
             <div class="medios"> <span class="input-label">Buscar:</span>
-                <input id="direccion" type="textbox" value="" placeholder="Ingresa una dirección &#9166">
+                <input id="direccion" type="textbox" value="" placeholder="Ingresa una dirección">
             </div>
             <div class="select-circle">
                 <div class="circle from">
                     <span class="input-label">Desde:</span>
-                    <input type="textbox" id="desde" placeholder="Ingresa una dirección  &#9166">
+                    <input type="textbox" id="desde" placeholder="Ingresa una dirección">
                 </div>
                 <div class="circle to">
                     <span class="input-label">Hasta:</span>
-                    <input type="textbox" id="hasta" placeholder="Ingresa una dirección &#9166">
+                    <input type="textbox" id="hasta" placeholder="Ingresa una dirección ">
                 </div>
             </div>
         </div>
@@ -37,15 +37,16 @@
             </div>
             <div class="medios"> <span class="input-label">Como:</span>
                 <select id="comoIr">
-                    <option value='Auto'> Auto </option>
-                    <option value='Caminando'> Caminando </option>
-                    <option value='Bus/Subterraneo/Tren'> Transporte Público </option>
+                    <option value='DRIVING'> Auto </option>
+                    <option value='WALKING'> Caminando </option>
+                    <option value='BICYCLING'>  Bicicleta </option>
+                    <option value='TRANSIT'> Transporte </option>
                 </select>
             </div>
             <div class="hide-xs">
                 <div class='agregarPts'>
                     <span class="input-label">Agregar:</span>
-                    <input type="textbox" id="agregar" placeholder="Ingresa una dirección &#9166">
+                    <input type="textbox" id="agregar" placeholder="Ingresa una dirección">
                 </div>
                 <label id="labelIntermedios">Lugares Intermedios
                     <br>
@@ -88,7 +89,8 @@
     <script src='js/ayuda.js'></script>
     <script src='js/apis.js'></script>
     <!-- Modificá "CLAVEAPI" por la clave que hayas obtenido -->
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?v=3&key=CLAVEAPI&libraries=places&callback=inicializarMapa" async defer></script> -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAejgasGmVBoXXZK8vw-NjDvaUBwhpiinU&libraries=places&callback=inicializarMapa" async defer></script>
+
 </body>
 
 </html>
