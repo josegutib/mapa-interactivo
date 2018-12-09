@@ -1,6 +1,32 @@
 geocodificadorModulo = (function () {
   var geocodificador // Geocodificador que dada una dirección devuelve una coordenada
 
+  // Promise para resolver direcciones
+  function resolverDireccion(direccion){
+    return new Promise(function(resolve, reject){
+      const circulo = new google.maps.Circle( {
+        center: posicionCentral,
+        radius: 20000
+      });
+
+      const request = {
+        address: direccion,
+        bounds: circulo.getBounds()
+      }
+
+      geocodificador.geocode(request,function(response){
+        const place = response[0]
+        const ubicacion = place.geometry.location
+        resolve({
+          direccion: direccion,
+          ubicacion: ubicacion
+        })
+      })
+
+    })
+
+  }
+
     // Permite obtener las coordenadas y las usa con la función llamada por parámtero
   function usaDireccion (direccion, funcionALlamar) {
         const circulo = new google.maps.Circle( {
@@ -45,6 +71,7 @@ geocodificadorModulo = (function () {
 
   return {
     usaDireccion,
-    inicializar
+    inicializar,
+    resolverDireccion
   }
 })()

@@ -104,9 +104,10 @@ direccionesModulo = (function () {
         })
       }
     }
+
+    marcadorModulo.agregarMarcadorRuta(start, end, waypts.map(obj => obj.location))
+
     var selectedMode = document.getElementById('comoIr').value
-
-
 
     var request = {
       origin: start,
@@ -116,6 +117,8 @@ direccionesModulo = (function () {
       optimizeWaypoints: true
 
     };
+
+    marcadorModulo.mostrarMiMarcador()
 
     servicioDirecciones.route(request, function(result, status) {
     if (status == 'OK') {
